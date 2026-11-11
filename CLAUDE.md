@@ -23,7 +23,7 @@ Anfragen an graph.facebook.com an. Niemals einen Token ins Repo, in Logs oder in
    - Reel: 3–6 Clips à 2–4 s mit `tools/make_reel.py` → `reels/JJJJ-MM-TT.mp4` (8–20 s). Texte im Magazin-Stil
      (kleine gesperrte Zeile `--hook-klein`/`--ende-klein` + große kursive Serifenzeile, weicher Schatten,
      kein Kasten), ohne Emojis, „|“ = Zeilenumbruch, max. ~16–20 Zeichen pro Zeile, keine ć/č/š/ž im
-     Videotext (Schrift kann sie nicht – „Zrce“ schreiben); Ende z. B. „Sommer 2027|jetzt anfragen“. Immer `--musik musik/sommer-N.m4a` (im Wechsel).
+     Videotext (Schrift kann sie nicht – „Zrce“ schreiben); Ende z. B. „Sommer 2027|jetzt anfragen“. Jeder Text ~5 s sichtbar (Standard `--text-sek 5`), letzter Clip ≥ 5 s. Immer `--musik musik/sommer-N.m4a` (im Wechsel).
      Die Musik ist selbst erzeugt (`tools/music.py`, lizenzfrei); neue Stücke mit anderem --seed/--key/--bpm. Karussell: 3–8 Fotos, erstes Bild das stärkste.
      Foto/Karussell-Seitenverhältnis muss zwischen 4:5 und 1.91:1 liegen – sonst vorher auf 4:5 (1080×1350) zuschneiden.
    - Caption mit den Skills ig-caption + ig-human: Stil aus `kunde.md`, eine klare Aufforderung,

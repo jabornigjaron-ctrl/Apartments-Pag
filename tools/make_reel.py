@@ -54,6 +54,7 @@ def main():
     ap.add_argument("--hook-klein", default="Insel Pag · Kroatien")
     ap.add_argument("--ende", default="")
     ap.add_argument("--ende-klein", default="traumurlaub-pag.com")
+    ap.add_argument("--text-sek", type=float, default=5.0, help="wie lange jeder Text sichtbar ist")
     ap.add_argument("--musik")
     a = ap.parse_args()
 
@@ -85,9 +86,9 @@ def main():
         # mit leichtem Hochgleiten.
         texts = []
         if a.hook:
-            texts.append((a.hook_klein, a.hook, 0.3, 3.6, 330))
+            texts.append((a.hook_klein, a.hook, 0.3, min(0.3 + a.text_sek, length), 330))
         if a.ende:
-            texts.append((a.ende_klein, a.ende, length - 3.2, length, 1180))
+            texts.append((a.ende_klein, a.ende, max(length - a.text_sek, 0), length, 1180))
 
         def alpha(t0, t1, f=0.6):
             return (f"if(lt(t,{t0:.2f}),0,if(lt(t,{t0+f:.2f}),(t-{t0:.2f})/{f},"
