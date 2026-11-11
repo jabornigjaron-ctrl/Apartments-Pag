@@ -15,12 +15,17 @@ Anfragen an graph.facebook.com an. Niemals einen Token ins Repo, in Logs oder in
 
 ## Täglicher Ablauf (Freigabe-Pflicht!)
 
-1. **Entwurf (morgens):**
-   - `kunde.md`, `medien.json` und die letzten ~14 Dateien in `posts/` lesen.
-   - Format im Wechsel: Reel → Karussell → Reel → Foto → … (Reels bevorzugt, ca. 4 von 7 Tagen).
-   - Medien wählen, die in den letzten 30 Tagen nicht verwendet wurden. Vorher Einzelbilder
-     ansehen (`ffmpeg -ss T -i video -frames:v 1`), damit Ausschnitt und Motiv passen.
-   - Reel: 3–6 Clips à 2–4 s mit `tools/make_reel.py` → `reels/JJJJ-MM-TT.mp4` (8–20 s). Texte im Magazin-Stil
+0. **Start einer frischen Sitzung:** Ist das Repo nicht da, mit `add_repo` (jabornigjaron-ctrl/apartments-pag,
+   access push) holen und klonen. `git pull`. Existiert `posts/<heute>.json` schon mit Status
+   `freigegeben` oder `gepostet`, keinen neuen Entwurf machen – nur kurz Bescheid geben.
+1. **Entwurf (jeden Morgen, Vorschau bis 7:00):**
+   - `kunde.md`, `videos.md`, `medien.json` und die letzten ~14 Dateien in `posts/` lesen.
+   - **Jeden Tag ein Reel** (Wunsch des Betreuers). Themen abwechseln: Meer/Türkis, Apartments,
+     Sonnenuntergang, Aktiv (Wandern/Rad), Strandbar/Beach-Club, Zrće/Party (Freunde/Maturareise), Familie.
+   - Clips möglichst nicht aus den letzten 7 Tagen; gleicher Clip nur mit anderem Ausschnitt/Startzeit.
+     Vorher Einzelbilder ansehen (`ffmpeg -ss T -i video -frames:v 1`), damit Ausschnitt und Motiv passen;
+     Text darf kein wichtiges Motiv (Gesicht, Person) verdecken.
+   - Reel: 4–6 Clips à 2–4 s mit `tools/make_reel.py` → `reels/JJJJ-MM-TT.mp4` (8–20 s). Texte im Magazin-Stil
      (kleine gesperrte Zeile `--hook-klein`/`--ende-klein` + große kursive Serifenzeile, weicher Schatten,
      kein Kasten), ohne Emojis, „|“ = Zeilenumbruch, max. ~16–20 Zeichen pro Zeile, keine ć/č/š/ž im
      Videotext (Schrift kann sie nicht – „Zrce“ schreiben); Ende z. B. „Sommer 2027|jetzt anfragen“. Jeder Text ~5 s sichtbar (Standard `--text-sek 5`), letzter Clip ≥ 5 s. Immer `--musik musik/sommer-N.m4a` (im Wechsel).
