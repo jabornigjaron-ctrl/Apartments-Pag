@@ -17,14 +17,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 FONT = ROOT / "tools/fonts/Inter-ExtraBold.otf"
-FONT_FEIN = ROOT / "tools/fonts/InterDisplay-Medium.otf"
+FONT_GROSS = ROOT / "tools/fonts/PlayfairDisplay-MediumItalic.ttf"  # nur Latin-1 (keine ć/č/š!)
+FONT_KLEIN = ROOT / "tools/fonts/Montserrat-SemiBold.ttf"
 W, H, FPS = 1080, 1920, 30
 
 
 def esc(t):
     # Emojis kann die Schrift nicht darstellen -> entfernen
     t = "".join(ch for ch in t if ord(ch) < 0x2190 or 0x2190 <= ord(ch) < 0x2300 and ch in "→←").strip()
-    t = " ".join(t.split())
+    t = " ".join(t.split(" "))  # nur normale Leerzeichen zusammenfassen (Sperrsatz-Abstaende bleiben)
+    t = " ".join(p for p in t.split(" ") if p)
     return t.replace("\\", "\\\\").replace(":", "\\:").replace("'", "’").replace("%", "\\%")
 
 
@@ -49,7 +51,9 @@ def main():
     ap.add_argument("out")
     ap.add_argument("clips", nargs="+")
     ap.add_argument("--hook", default="")
+    ap.add_argument("--hook-klein", default="Insel Pag · Kroatien")
     ap.add_argument("--ende", default="")
+    ap.add_argument("--ende-klein", default="traumurlaub-pag.com")
     ap.add_argument("--musik")
     a = ap.parse_args()
 
@@ -76,29 +80,41 @@ def main():
             prev = f"x{i}"
         length = total - fade * (len(segs) - 1)
 
-        # Elegante Texte: feine Schrift, weicher (verschwommener) Schatten, sanftes Ein-/Ausblenden
+        # Texte im Magazin-Stil: kleine, gesperrte Zeile in Grossbuchstaben (Montserrat) ueber einer
+        # grossen, kursiven Serifenzeile (Playfair Display). Weicher Schatten, sanftes Einblenden
+        # mit leichtem Hochgleiten.
         texts = []
         if a.hook:
-            texts.append((a.hook, 0.3, 3.4, "h*0.20"))
+            texts.append((a.hook_klein, a.hook, 0.3, 3.6, 330))
         if a.ende:
-            texts.append((a.ende, length - 3.0, length, "h*0.70"))
+            texts.append((a.ende_klein, a.ende, length - 3.2, length, 1180))
 
-        def alpha(t0, t1, f=0.5):
+        def alpha(t0, t1, f=0.6):
             return (f"if(lt(t,{t0:.2f}),0,if(lt(t,{t0+f:.2f}),(t-{t0:.2f})/{f},"
                     f"if(lt(t,{t1-f:.2f}),1,if(lt(t,{t1:.2f}),({t1:.2f}-t)/{f},0))))")
 
-        def draw(text, t0, t1, y, color, dy=0):
-            # "|" im Text = Zeilenumbruch; jede Zeile zentriert
-            lines = [l.strip() for l in text.split("|")]
-            size = 72 if max(len(l) for l in lines) <= 22 else 60
-            return ",".join(
-                f"drawtext=fontfile={FONT_FEIN}:text='{esc(l)}':fontsize={size}:fontcolor={color}"
-                f":x=(w-tw)/2:y={y}+{dy + i * int(size * 1.3)}:alpha='{alpha(t0, t1)}'"
-                for i, l in enumerate(lines))
+        def spaced(s):  # Sperrsatz fuer die kleine Zeile
+            return " ".join(" " if c == " " else c for c in s.upper())  # Halbgeviert als Wortabstand
+
+        def draw(klein, gross, t0, t1, y, color, dy=0):
+            lift = f"18*max(0\\,1-(t-{t0:.2f})/0.7)"  # gleitet beim Einblenden 18 px nach oben
+            al = alpha(t0, t1)
+            out, yy = [], y + dy
+            if klein:
+                out.append(f"drawtext=fontfile={FONT_KLEIN}:text='{esc(spaced(klein))}':fontsize=34"
+                           f":fontcolor={color}:x=(w-tw)/2:y={yy}+{lift}:alpha='{al}'")
+                yy += 70
+            lines = [l.strip() for l in gross.split("|")]
+            size = 104 if max(len(l) for l in lines) <= 16 else 88 if max(len(l) for l in lines) <= 20 else 74
+            for l in lines:
+                out.append(f"drawtext=fontfile={FONT_GROSS}:text='{esc(l)}':fontsize={size}"
+                           f":fontcolor={color}:x=(w-tw)/2:y={yy}+{lift}:alpha='{al}'")
+                yy += int(size * 1.18)
+            return ",".join(out)
 
         last = f"[{prev}]" if len(segs) > 1 else "[0:v]"
         if texts:
-            shadow = ",".join(draw(*tx, color="black@0.8", dy=5) for tx in texts)
+            shadow = ",".join(draw(*tx, color="black@0.7", dy=4) for tx in texts)
             front = ",".join(draw(*tx, color="white") for tx in texts)
             fc = (chain + f"color=black@0.0:s={W}x{H}:r={FPS}:d={length:.2f},format=rgba,"
                   f"{shadow},gblur=sigma=16[soft];"
