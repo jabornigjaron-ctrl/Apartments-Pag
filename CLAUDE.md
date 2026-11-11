@@ -20,8 +20,10 @@ Anfragen an graph.facebook.com an. Niemals einen Token ins Repo, in Logs oder in
    - Format im Wechsel: Reel → Karussell → Reel → Foto → … (Reels bevorzugt, ca. 4 von 7 Tagen).
    - Medien wählen, die in den letzten 30 Tagen nicht verwendet wurden. Vorher Einzelbilder
      ansehen (`ffmpeg -ss T -i video -frames:v 1`), damit Ausschnitt und Motiv passen.
-   - Reel: 3–5 Clips à 2–4 s mit `tools/make_reel.py` → `reels/JJJJ-MM-TT.mp4` (8–20 s, Hook-Text
-     ohne Emojis, Ende z. B. „Jetzt für 2027 anfragen“). Karussell: 3–8 Fotos, erstes Bild das stärkste.
+   - Reel: 3–6 Clips à 2–4 s mit `tools/make_reel.py` → `reels/JJJJ-MM-TT.mp4` (8–20 s). Texte elegant
+     (feine Schrift, weicher Schatten, kein Kasten), ohne Emojis, „|“ = Zeilenumbruch, max. ~22 Zeichen
+     pro Zeile; Ende z. B. „Sommer 2027|jetzt anfragen“. Immer `--musik musik/sommer-N.m4a` (im Wechsel).
+     Die Musik ist selbst erzeugt (`tools/music.py`, lizenzfrei); neue Stücke mit anderem --seed/--key/--bpm. Karussell: 3–8 Fotos, erstes Bild das stärkste.
      Foto/Karussell-Seitenverhältnis muss zwischen 4:5 und 1.91:1 liegen – sonst vorher auf 4:5 (1080×1350) zuschneiden.
    - Caption mit den Skills ig-caption + ig-human: Stil aus `kunde.md`, eine klare Aufforderung,
      3–6 Hashtags. Nichts erfinden (Preise, Termine, Ausstattung).

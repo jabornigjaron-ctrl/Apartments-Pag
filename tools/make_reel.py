@@ -3,7 +3,7 @@
 
 Aufruf:
   python3 tools/make_reel.py reels/2026-11-12.mp4 \
-      --hook "POV: Dein Sommer 2027 🌊" --ende "Jetzt buchen · Link in Bio" \
+      --hook "Nur ein paar Schritte|bis hierher" --ende "Sommer 2027|jetzt anfragen" --musik musik/sommer-1.m4a \
       videos/strand-003.mp4:2:3.5 videos/apartments-002.mp4:0:3 fotos/strand-010.jpg::3
 
 Jeder Clip ist  DATEI:START:DAUER  (Sekunden). Fotos bekommen einen langsamen Zoom.
@@ -17,6 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 FONT = ROOT / "tools/fonts/Inter-ExtraBold.otf"
+FONT_FEIN = ROOT / "tools/fonts/InterDisplay-Medium.otf"
 W, H, FPS = 1080, 1920, 30
 
 
@@ -75,16 +76,35 @@ def main():
             prev = f"x{i}"
         length = total - fade * (len(segs) - 1)
 
-        txt = ""
-        box = "box=1:boxcolor=black@0.35:boxborderw=28"
+        # Elegante Texte: feine Schrift, weicher (verschwommener) Schatten, sanftes Ein-/Ausblenden
+        texts = []
         if a.hook:
-            txt += (f",drawtext=fontfile={FONT}:text='{esc(a.hook)}':fontsize=64:fontcolor=white:{box}"
-                    f":x=(w-tw)/2:y=h*0.18:enable='lt(t,3.2)'")
+            texts.append((a.hook, 0.3, 3.4, "h*0.20"))
         if a.ende:
-            txt += (f",drawtext=fontfile={FONT}:text='{esc(a.ende)}':fontsize=60:fontcolor=white:{box}"
-                    f":x=(w-tw)/2:y=h*0.72:enable='gt(t,{length-2.8:.2f})'")
+            texts.append((a.ende, length - 3.0, length, "h*0.70"))
+
+        def alpha(t0, t1, f=0.5):
+            return (f"if(lt(t,{t0:.2f}),0,if(lt(t,{t0+f:.2f}),(t-{t0:.2f})/{f},"
+                    f"if(lt(t,{t1-f:.2f}),1,if(lt(t,{t1:.2f}),({t1:.2f}-t)/{f},0))))")
+
+        def draw(text, t0, t1, y, color, dy=0):
+            # "|" im Text = Zeilenumbruch; jede Zeile zentriert
+            lines = [l.strip() for l in text.split("|")]
+            size = 72 if max(len(l) for l in lines) <= 22 else 60
+            return ",".join(
+                f"drawtext=fontfile={FONT_FEIN}:text='{esc(l)}':fontsize={size}:fontcolor={color}"
+                f":x=(w-tw)/2:y={y}+{dy + i * int(size * 1.3)}:alpha='{alpha(t0, t1)}'"
+                for i, l in enumerate(lines))
+
         last = f"[{prev}]" if len(segs) > 1 else "[0:v]"
-        fc = chain + f"{last}null{txt},format=yuv420p[v]"
+        if texts:
+            shadow = ",".join(draw(*tx, color="black@0.8", dy=5) for tx in texts)
+            front = ",".join(draw(*tx, color="white") for tx in texts)
+            fc = (chain + f"color=black@0.0:s={W}x{H}:r={FPS}:d={length:.2f},format=rgba,"
+                  f"{shadow},gblur=sigma=16[soft];"
+                  f"{last}[soft]overlay=format=auto,{front},format=yuv420p[v]")
+        else:
+            fc = chain + f"{last}null,format=yuv420p[v]"
 
         cmd = ["ffmpeg", "-v", "error", "-y", *inputs]
         if a.musik:
