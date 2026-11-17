@@ -17,7 +17,9 @@ Anfragen an graph.facebook.com an. Niemals einen Token ins Repo, in Logs oder in
 
 0. **Start einer frischen Sitzung:** Ist das Repo nicht da, mit `add_repo` (jabornigjaron-ctrl/apartments-pag,
    access push) holen und klonen. `git pull`. Existiert `posts/<heute>.json` schon mit Status
-   `freigegeben` oder `gepostet`, keinen neuen Entwurf machen – nur kurz Bescheid geben.
+   `freigegeben` oder `gepostet` – **oder ist ein anderer Post mit `"geplant_fuer": "<heute>"` eingeplant**
+   (nachgeholte Posts) –, keinen neuen Entwurf machen, nur kurz Bescheid geben. Posts mit `geplant_fuer`
+   werden an jenem Tag um 18:00 gepostet (send_later ist bereits geplant).
 1. **Entwurf (jeden Morgen, Vorschau bis 7:00):**
    - `kunde.md`, `videos.md`, `medien.json` und die letzten ~14 Dateien in `posts/` lesen.
    - **Jeden Tag ein Reel** (Wunsch des Betreuers). Themen abwechseln: Meer/Türkis, Apartments,
