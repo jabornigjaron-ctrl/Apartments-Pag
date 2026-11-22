@@ -58,7 +58,10 @@ def main():
     ap.add_argument("--bpm", type=float, default=96)
     ap.add_argument("--key", type=int, default=0, help="Tonart-Verschiebung in Halbtoenen (0=C)")
     ap.add_argument("--sek", type=float, default=24)
+    ap.add_argument("--stil", choices=["chill", "house", "lofi", "cinematic"], default="chill")
     a = ap.parse_args()
+    if a.stil != "chill":
+        return render_style(a)
     rng = np.random.default_rng(a.seed)
     prog = PROGS[a.seed % len(PROGS)]
     beat = 60 / a.bpm
@@ -129,6 +132,114 @@ def main():
         w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
         w.writeframes((st * 32767).astype(np.int16).tobytes())
     print("Musik:", a.out)
+
+
+def noise_hit(rng, n, decay, gain, hp=True):
+    nz = rng.standard_normal(n)
+    if hp:
+        nz = nz - np.concatenate([[0], nz[:-1]])
+    return nz * np.exp(-np.arange(n) / SR * decay) * gain
+
+
+def add(buf, start, sig):
+    s = int(start)
+    if s >= len(buf):
+        return
+    e = min(len(buf), s + len(sig))
+    buf[s:e] += sig[:e - s]
+
+
+def kick(gain=0.5, length=0.28):
+    t = np.arange(int(length * SR)) / SR
+    return np.sin(2 * np.pi * (48 + 90 * np.exp(-t * 35)) * t) * np.exp(-t * 14) * gain
+
+
+def epiano(f, dur, gain):
+    t = np.arange(int(dur * SR)) / SR
+    tone = np.sin(2 * np.pi * f * t) + 0.35 * np.sin(2 * np.pi * 2 * f * t) * np.exp(-t * 3)
+    return tone * np.exp(-t * 1.6) * (1 + 0.15 * np.sin(2 * np.pi * 5 * t)) * gain
+
+
+def render_style(a):
+    """Weitere Stile: house (tanzbar, 4/4), lofi (entspannt, Vinyl), cinematic (ruhig, ohne Beat)."""
+    rng = np.random.default_rng(a.seed)
+    prog = PROGS[a.seed % len(PROGS)]
+    bpm = a.bpm if a.bpm != 96 else {"house": 122, "lofi": 78, "cinematic": 70}[a.stil]
+    beat = 60 / bpm; bar = 4 * beat
+    n = int(a.sek * SR)
+    keys = np.zeros(n); bass = np.zeros(n); drums = np.zeros(n); pad = np.zeros(n)
+    root = 48 + a.key
+    nbars = int(np.ceil(a.sek / bar))
+    for b in range(nbars):
+        chord = prog[b % 4]
+        s0 = b * bar * SR
+        L = int(bar * SR)
+        tt = np.arange(L) / SR
+        if a.stil == "house":
+            # Off-Beat-Akkordstabs, Bass in Achteln auf der Off-Zaehlzeit, Four-on-the-floor
+            for q in range(4):
+                add(drums, s0 + q * beat * SR, kick(0.55))
+                add(drums, s0 + (q + 0.5) * beat * SR, noise_hit(rng, int(0.12 * SR), 35, 0.05))   # offene HiHat
+                if q in (1, 3):
+                    add(drums, s0 + q * beat * SR, noise_hit(rng, int(0.15 * SR), 28, 0.16, hp=False))  # Clap
+                for e in (0.5,):
+                    seg = np.zeros(int(0.22 * SR))
+                    tq = np.arange(len(seg)) / SR
+                    for iv in chord:
+                        f = hz(root + 12 + iv)
+                        seg += (2 * ((f * tq) % 1.0) - 1) * 0.06
+                    add(keys, s0 + (q + e) * beat * SR, lowpass(seg * np.exp(-tq * 14), 2600))
+                    tb = np.arange(int(beat * 0.45 * SR)) / SR
+                    fb = hz(root - 12 + chord[0])
+                    add(bass, s0 + (q + e) * beat * SR,
+                        (np.sin(2 * np.pi * fb * tb) + 0.3 * np.sin(4 * np.pi * fb * tb)) * np.exp(-tb * 6) * 0.4)
+            add(pad, s0, sum(np.sin(2 * np.pi * hz(root + 24 + iv) * tt) for iv in chord) * 0.012)
+        elif a.stil == "lofi":
+            for i, iv in enumerate(chord):  # leicht verschleppter E-Piano-Akkord
+                add(keys, s0 + i * 0.03 * SR, epiano(hz(root + 12 + iv), bar * 0.95, 0.09))
+            add(bass, s0, np.sin(2 * np.pi * hz(root - 12 + chord[0]) * tt) * np.exp(-tt * 1.2) * 0.3)
+            swing = 0.62
+            for q in range(4):
+                if q in (0,) or (q == 2 and rng.random() < 0.5):
+                    add(drums, s0 + q * beat * SR, kick(0.42, 0.3))
+                if q == 2 and rng.random() >= 0.5:
+                    add(drums, s0 + (q + 0.5) * beat * SR, kick(0.35, 0.3))
+                if q in (1, 3):
+                    add(drums, s0 + q * beat * SR, noise_hit(rng, int(0.18 * SR), 22, 0.10, hp=False))
+                for h in (0, swing):
+                    add(drums, s0 + (q + h) * beat * SR, noise_hit(rng, int(0.05 * SR), 70, 0.025))
+        else:  # cinematic
+            seg = np.zeros(L)
+            for iv in chord:
+                for det in (-0.08, 0.08):
+                    f = hz(root + iv) * 2 ** (det / 12)
+                    seg += (2 * ((f * tt) % 1.0) - 1) * 0.045
+            add(pad, s0, lowpass(seg, 900) * env(L, bar * 0.45, bar * 0.45))
+            add(bass, s0, np.sin(2 * np.pi * hz(root - 12 + chord[0]) * tt) * env(L, 0.8, 1.0) * 0.3)
+            for k in range(3):  # einzelne Klaviertoene
+                note = root + 24 + chord[rng.integers(0, 4)] + (12 if rng.random() < 0.3 else 0)
+                tp = np.arange(int(2.5 * SR)) / SR
+                add(keys, s0 + (k * 1.3 + rng.random() * 0.4) * beat * SR,
+                    (np.sin(2 * np.pi * hz(note) * tp) + 0.2 * np.sin(4 * np.pi * hz(note) * tp)) * np.exp(-tp * 1.8) * 0.12)
+            if b % 2 == 1:  # tiefer Schlag alle zwei Takte
+                add(drums, s0, kick(0.35, 0.8))
+    mix = keys + bass + drums + pad
+    if a.stil == "lofi":
+        mix = lowpass(mix, 3800)
+        crackle = np.zeros(n)
+        idx = rng.integers(0, n, size=int(a.sek * 12))
+        crackle[idx] = rng.standard_normal(len(idx)) * 0.04
+        mix += lowpass(crackle + rng.standard_normal(n) * 0.0006, 5000)
+    mix = reverb(mix, {"house": 0.18, "lofi": 0.25, "cinematic": 0.5}[a.stil])
+    mix *= env(n, 0.3 if a.stil == "house" else 1.2, 2.0)
+    mix = np.tanh(mix * 1.2)
+    mix /= np.max(np.abs(mix)) + 1e-9
+    mix *= 0.85
+    st = np.stack([mix, np.roll(mix, 260) * 0.97], axis=1)
+    with wave.open(a.out, "wb") as w:
+        w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
+        w.writeframes((st * 32767).astype(np.int16).tobytes())
+    print("Musik:", a.out, a.stil, f"{bpm:.0f} bpm")
 
 
 if __name__ == "__main__":

@@ -27,11 +27,21 @@ Anfragen an graph.facebook.com an. Niemals einen Token ins Repo, in Logs oder in
    - Clips möglichst nicht aus den letzten 7 Tagen; gleicher Clip nur mit anderem Ausschnitt/Startzeit.
      Vorher Einzelbilder ansehen (`ffmpeg -ss T -i video -frames:v 1`), damit Ausschnitt und Motiv passen;
      Text darf kein wichtiges Motiv (Gesicht, Person) verdecken.
-   - Reel: 4–6 Clips à 2–4 s mit `tools/make_reel.py` → `reels/JJJJ-MM-TT.mp4` (8–20 s). Texte im Magazin-Stil
-     (kleine gesperrte Zeile `--hook-klein`/`--ende-klein` + große kursive Serifenzeile, weicher Schatten,
-     kein Kasten), ohne Emojis, „|“ = Zeilenumbruch, max. ~16–20 Zeichen pro Zeile, keine ć/č/š/ž im
-     Videotext (Schrift kann sie nicht – „Zrce“ schreiben); Ende z. B. „Sommer 2027|jetzt anfragen“. Jeder Text ~5 s sichtbar (Standard `--text-sek 5`), letzter Clip ≥ 5 s. Immer `--musik musik/sommer-N.m4a` (im Wechsel).
-     Die Musik ist selbst erzeugt (`tools/music.py`, lizenzfrei); neue Stücke mit anderem --seed/--key/--bpm. Karussell: 3–8 Fotos, erstes Bild das stärkste.
+   - Reel mit `tools/make_reel.py` → `reels/JJJJ-MM-TT.mp4` (8–20 s). Texte ohne Emojis, „|“ = Zeilenumbruch,
+     max. ~16–20 Zeichen pro Zeile, keine ć/č/š/ž im Videotext („Zrce“ schreiben). Hook steht ab Bild 1.
+   - **Abwechslung (Wunsch des Betreuers – nicht zweimal hintereinander gleich!):** Stil (`--stil magazin|bold|pov|hand`,
+     Übersicht `stile.jpg`), Übergang (`--uebergang fade|mix|schnitt`, bei mix `--seed` variieren) und Musik
+     (`musik/`: sommer-1..3 chill, house-1..2 tanzbar, lofi-1..2 entspannt, cinematic-1..2 ruhig) rotieren;
+     in `posts/*.json` unter `"design"` festhalten. Passende Kombis: bold+schnitt+house (schnell, Liste),
+     pov+mix+lofi (POV-Story), magazin+fade+sommer/cinematic (edel), hand+fade+lofi/cinematic (Sonnenuntergang).
+     Bei house im Takt schneiden: 122 bpm → 4 Schläge = 1,967 s (+0,04 bei schnitt). Neue Musik:
+     `tools/music.py --stil chill|house|lofi|cinematic --seed N --key K`, danach mit ffmpeg `loudnorm=I=-16` nach m4a.
+   - **Reichweite (viral):** In den ersten 1–2 s ein starker Hook (POV, Frage, Zahl, „Speicher dir das“,
+     „Das hier ist kein Filter“); 10–16 s, damit es loopt; Formate wechseln: Listen „3 Gründe…“ (`--zeile
+     "VON-BIS:Text"`), POV, Vorher/Nachher (Alltag→Pag), „Rate wo das ist“, Sonnenuntergang-Mood.
+     Ende mit Frage oder Aufforderung (Kommentieren, Markieren, Speichern, Teilen). Caption: erste Zeile = Hook,
+     Frage für Kommentare, 3–6 passende Hashtags. Keine Versprechen, dass es viral geht.
+     Karussell: 3–8 Fotos, erstes Bild das stärkste.
      Foto/Karussell-Seitenverhältnis muss zwischen 4:5 und 1.91:1 liegen – sonst vorher auf 4:5 (1080×1350) zuschneiden.
    - Caption mit den Skills ig-caption + ig-human: Stil aus `kunde.md`, eine klare Aufforderung,
      3–6 Hashtags. Nichts erfinden (Preise, Termine, Ausstattung).
