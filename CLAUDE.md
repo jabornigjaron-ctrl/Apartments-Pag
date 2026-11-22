@@ -65,6 +65,18 @@ Anfragen an graph.facebook.com an. Niemals einen Token ins Repo, in Logs oder in
    dem Betreuer den Link zum Post schicken.
 5. Ohne „ok“ wird **nie** gepostet. Kein Freigabe bis 23:00 → Tag auslassen, Entwurf bleibt liegen.
 
+## Trend-Sound-Tage: Montag, Mittwoch, Freitag (Wunsch des Betreuers)
+An diesen Tagen postet der **Betreuer selbst** in der Instagram-App mit einem Trend-Sound (die API kann keine
+Instagram-Musik hinzufügen; das Unternehmenskonto hat nur die kommerzielle Musikbibliothek).
+- Reel **ohne Musik** rendern (Remotion: `"music": null`; make_reel: ohne `--musik`), Schnitte trotzdem rhythmisch
+  (z. B. 2-s-Takt), 7–12 s, damit es zu kurzen Trend-Sounds passt. In `posts/*.json`: `"typ": "reel"`,
+  `"manuell": true`, `"design": {"musik": "trend (Betreuer)"}`.
+- Morgens Vorschau + Caption wie immer schicken, dazu den Hinweis, dass er heute selbst postet.
+- Bei „ok“: Status `freigegeben`, **kein** publish.py, sondern mit `send_later` für **17:45 Europe/Vienna** eine
+  Erinnerung planen: Reel-Datei mit SendUserFile (status proactive, display attach) erneut schicken, Caption zum
+  Kopieren, Anleitung: Instagram → + → Reel → Video wählen → „Audio“ → Trend-Sound (↗) wählen → Caption einfügen →
+  Teilen. Danach fragen, ob er gepostet hat; bei „ja“ Status `gepostet (manuell)` setzen.
+
 ## Sonstiges
 - Tageslimit Instagram: 100 Posts / 24 h (wir brauchen 1).
 - Fehler 190 (Token ungültig/abgelaufen): Betreuer bitten, in der Meta-App unter
