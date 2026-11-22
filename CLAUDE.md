@@ -27,7 +27,15 @@ Anfragen an graph.facebook.com an. Niemals einen Token ins Repo, in Logs oder in
    - Clips möglichst nicht aus den letzten 7 Tagen; gleicher Clip nur mit anderem Ausschnitt/Startzeit.
      Vorher Einzelbilder ansehen (`ffmpeg -ss T -i video -frames:v 1`), damit Ausschnitt und Motiv passen;
      Text darf kein wichtiges Motiv (Gesicht, Person) verdecken.
-   - Reel mit `tools/make_reel.py` → `reels/JJJJ-MM-TT.mp4` (8–20 s). Texte ohne Emojis, „|“ = Zeilenumbruch,
+   - **Bevorzugt Remotion** (professionelle Animationen): `cd remotion && npm ci` (einmal pro frischem Container),
+     Props-JSON nach `posts/JJJJ-MM-TT.reel.json` schreiben, dann `node render.mjs ../posts/JJJJ-MM-TT.reel.json
+     ../reels/JJJJ-MM-TT.mp4` (~3 Min.). Vorlagen (`vorlagen.jpg`): `kinetic` (aufploppende Wörter, *Wort* = gelb
+     hinterlegt, nummerierte Listenkarten `items`, Fortschrittsbalken, Zoom im Takt mit `bpm`), `pov` (weiße
+     Sprechblasen, Tipp-Effekt), `elegant` (Serifenschrift mit Maskeneffekt). Übergang `cut|fade|slide|zoom|mix`.
+     `location` = Ortsmarke, `end.cta` = Button. Felder siehe `remotion/src/Reel.tsx` (ReelProps), Beispiel
+     `posts/2026-11-22.reel.json`. Vorschaubilder: `npx remotion still src/index.ts Reel out.png --props=… --frame=N
+     --browser-executable=/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell`.
+   - Alternative/Fallback: `tools/make_reel.py` → `reels/JJJJ-MM-TT.mp4` (8–20 s). Texte ohne Emojis, „|“ = Zeilenumbruch,
      max. ~16–20 Zeichen pro Zeile, keine ć/č/š/ž im Videotext („Zrce“ schreiben). Hook steht ab Bild 1.
    - **Abwechslung (Wunsch des Betreuers – nicht zweimal hintereinander gleich!):** Stil (`--stil magazin|bold|pov|hand`,
      Übersicht `stile.jpg`), Übergang (`--uebergang fade|mix|schnitt`, bei mix `--seed` variieren) und Musik

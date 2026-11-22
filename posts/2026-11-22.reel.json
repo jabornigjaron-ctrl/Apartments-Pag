@@ -1,0 +1,21 @@
+{
+ "template": "kinetic", "transition": "cut", "bpm": 122, "music": "musik/house-1.m4a",
+ "location": "Gajac · Insel Pag",
+ "clips": [
+  {"src":"videos/strand-036.mp4","start":1,"dur":1.967},
+  {"src":"videos/strand-050.mp4","start":1,"dur":1.967},
+  {"src":"videos/strand-026.mp4","start":2,"dur":1.967},
+  {"src":"videos/strand-002.mp4","start":2,"dur":1.967},
+  {"src":"videos/apartments-008.mp4","start":1,"dur":1.967},
+  {"src":"videos/strand-041.mp4","start":8,"dur":1.967},
+  {"src":"videos/apartments-001.mp4","start":10,"dur":1.967},
+  {"src":"videos/apartments-004.mp4","start":20,"dur":1.967}
+ ],
+ "hook": {"kicker":"Speicher dir das","text":"3 Gründe für *Pag* 2027","sek":2.9},
+ "items": [
+  {"from":3.0,"to":5.9,"text":"Türkises *Wasser*"},
+  {"from":5.9,"to":8.8,"text":"Strand *vor der Tür*"},
+  {"from":8.8,"to":11.8,"text":"*Zrce* nur 2 km"}
+ ],
+ "end": {"kicker":"Kommentier unten","text":"Welcher Grund *zieht dich?*","cta":"Jetzt anfragen","sek":3.8}
+}
