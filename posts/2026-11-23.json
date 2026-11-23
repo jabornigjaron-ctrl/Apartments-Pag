@@ -1,0 +1,25 @@
+{
+ "datum": "2026-11-23",
+ "typ": "reel",
+ "manuell": true,
+ "medien": [
+  "reels/2026-11-23.mp4"
+ ],
+ "design": {
+  "werkzeug": "remotion",
+  "template": "pov",
+  "transition": "fade",
+  "musik": "trend (Betreuer)",
+  "format": "POV Morgen"
+ },
+ "remotion_props": "posts/2026-11-23.reel.json",
+ "quellen": [
+  "videos/apartments-006.mp4",
+  "videos/strand-001.mp4",
+  "videos/strand-044.mp4",
+  "videos/strand-012.mp4",
+  "videos/apartments-003.mp4"
+ ],
+ "caption": "POV: Du wachst auf und das ist dein Morgen ☀️🌊\n\nKaffee auf der Terrasse, ein paar Schritte zum Strand, ab ins türkise Wasser. So fühlt sich Urlaub in Gajac auf der Insel Pag an.\n\nUnd du? Wann bist du hier? 👇 Schreib's in die Kommentare.\nAnfragen für Sommer 2027 per DM oder über den Link in der Bio.\n\n#inselpag #gajac #kroatien #urlaub2027 #pov",
+ "status": "entwurf"
+}

@@ -1,0 +1,12 @@
+{
+ "template": "pov", "transition": "fade", "music": null, "location": "Gajac · Insel Pag",
+ "clips": [
+  {"src":"videos/apartments-006.mp4","start":0.5,"dur":2.8},
+  {"src":"videos/strand-001.mp4","start":7,"dur":2.4},
+  {"src":"videos/strand-044.mp4","start":14,"dur":2.4},
+  {"src":"videos/strand-012.mp4","start":3,"dur":2.2},
+  {"src":"videos/apartments-003.mp4","start":15,"dur":3.4}
+ ],
+ "hook": {"kicker":"POV:","text":"du wachst auf|und das ist dein Morgen","sek":4.2},
+ "end": {"kicker":"traumurlaub-pag.com","text":"Und du?|Wann bist du hier?","cta":"Jetzt anfragen","sek":3.0}
+}
