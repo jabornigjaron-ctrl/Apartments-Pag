@@ -1,0 +1,24 @@
+{
+ "datum": "2026-11-26",
+ "typ": "reel",
+ "medien": [
+  "reels/2026-11-26.mp4"
+ ],
+ "design": {
+  "werkzeug": "remotion",
+  "template": "elegant",
+  "transition": "fade",
+  "musik": "cinematic-1",
+  "format": "Sonnenuntergang-Mood"
+ },
+ "remotion_props": "posts/2026-11-26.reel.json",
+ "quellen": [
+  "videos/strand-006.mp4",
+  "videos/strand-037.mp4",
+  "videos/strand-007.mp4",
+  "videos/apartments-002.mp4",
+  "musik/cinematic-1.m4a"
+ ],
+ "caption": "Hier endet jeder Tag golden 🌅\n\nWenn die Sonne über dem Meer untergeht, wird es in Gajac ganz still. Noch ein letzter Blick aufs Wasser, dann zurück auf die eigene Terrasse.\n\nWo schaust du dir am liebsten den Sonnenuntergang an? 👇\nSpeicher dir das für deine Urlaubsplanung 2027 📌 Anfragen per DM oder über den Link in der Bio.\n\n#inselpag #gajac #kroatien #sonnenuntergang #urlaub2027",
+ "status": "entwurf"
+}
