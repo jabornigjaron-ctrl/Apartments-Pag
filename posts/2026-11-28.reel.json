@@ -1,0 +1,18 @@
+{
+ "template": "kinetic", "transition": "mix", "bpm": 122, "music": "musik/house-2.m4a", "location": "Gajac · Insel Pag",
+ "clips": [
+  {"src":"videos/strand-052.mp4","start":1,"dur":2.6},
+  {"src":"videos/strand-015.mp4","start":3,"dur":2.6},
+  {"src":"videos/strand-027.mp4","start":2,"dur":2.6},
+  {"src":"videos/strand-042.mp4","start":5,"dur":2.6},
+  {"src":"videos/strand-010.mp4","start":2,"dur":2.6},
+  {"src":"videos/apartments-007.mp4","start":14,"dur":4.4}
+ ],
+ "hook": {"kicker":"Ehrlich jetzt","text":"Das ist *kein* Filter","sek":2.6},
+ "items": [
+  {"from":2.6,"to":5.0,"text":"Echtes *Türkis*"},
+  {"from":5.0,"to":7.4,"text":"Kein *Photoshop*"},
+  {"from":7.4,"to":10.2,"text":"Einfach *Pag*"}
+ ],
+ "end": {"kicker":"Teil das mit","text":"deiner *Urlaubs­crew*","cta":"Jetzt anfragen","sek":4.0}
+}
